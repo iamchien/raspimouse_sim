@@ -42,7 +42,7 @@ git clone https://github.com/irobo197/raspimouse_sim.git
 Install the dependent ROS packages.
 
 ```
-cd ~/catkin_ws/src
+cd ~/catkin_ws/src/raspimouse_sim
 rosdep install -r -y -i --from-paths raspimouse*
 ```
 
