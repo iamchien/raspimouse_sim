@@ -1,0 +1,20 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="configuration_basename" default="raspimouse_lds_2d.lua"/>
+  <arg name="open_rviz" default="true"/>
+
+  <!-- raspimouse -->
+  <include file="$(find raspimouse_gazebo)/launch/raspimouse_with_turtlebot3_world.launch"/>
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  <include file="$(find raspimouse_slam)/launch/raspimouse_$(arg slam_methods).launch">
+    <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+        args="-d $(find raspimouse_slam)/rviz/raspimouse_$(arg slam_methods).rviz"/>
+  </group>
+</launch>
