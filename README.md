@@ -1,10 +1,6 @@
-[English](README.en.md) | [日本語](README.md)
+# raspimouse_sim
 
-# raspimouse_sim 
-
-Gazebo上でシミュレートできるRaspberry Pi MouseのROSパッケージ一式です。
-
-詳細なセットアップ方法は[Wiki](https://github.com/rt-net/raspimouse_sim/wiki)にまとめています。
+ROS package suite for Raspberry Pi Mouse Simulator runs on Gazebo
 
 ![](https://rt-net.github.io/images/raspberry-pi-mouse/raspimouse_sim_samplemaze_animation.gif)
 
@@ -14,16 +10,16 @@ Gazebo上でシミュレートできるRaspberry Pi MouseのROSパッケージ�
 |:---:|:---:|
 |[![industrial_ci](https://github.com/rt-net/raspimouse_sim/workflows/industrial_ci/badge.svg?branch=master)](https://github.com/rt-net/raspimouse_sim/actions?query=branch%3Amaster+workflow%3Aindustrial_ci)|[![industrial_ci](https://github.com/rt-net/raspimouse_sim/workflows/industrial_ci/badge.svg?branch=melodic-devel)](https://github.com/rt-net/raspimouse_sim/actions?query=branch%3Amelodic-devel+workflow%3Aindustrial_ci)|
 
-以下のブランチのメンテナンスは終了しています。
+The follwing branches are not maintained.
 
 * rpim_book_version
 * indigo-devel
 * kinetic-devel
 
 
-## 動作環境
+## Requirements
 
-以下の環境を前提として動作確認しています。
+requires the following to run:
 
 * Ubuntu
   * Ubuntu Bionic Beaver 18.04.*
@@ -34,50 +30,42 @@ Gazebo上でシミュレートできるRaspberry Pi MouseのROSパッケージ�
 * ROS Package
   * ros-melodic-desktop-full
 
-## インストール方法
+## Installation
 
-このROSパッケージをダウンロードします。
-
-```
-cd ~/catkin_ws/src
-git clone https://github.com/rt-net/raspimouse_sim.git
-```
-
-依存しているROSパッケージをインストールします。
+Download this ROS package.
 
 ```
 cd ~/catkin_ws/src
-git clone https://github.com/ryuichiueda/raspimouse_ros_2.git
-git clone https://github.com/rt-net/raspimouse_description.git
+git clone https://github.com/irobo197/raspimouse_sim.git
+```
+
+Install the dependent ROS packages.
+
+```
+cd ~/catkin_ws/src/raspimouse_sim
 rosdep install -r -y -i --from-paths raspimouse*
 ```
 
-`catkin_make`を使用してパッケージをビルドします。
+Build this package using `catkin_make`.
 
 ```
 cd ~/catkin_ws && catkin_make
 source ~/catkin_ws/devel/setup.bash
 ```
 
-Gazeboで使用するハードウェアモデルデータをダウンロードします。
-
-```
-rosrun raspimouse_gazebo download_gazebo_models.sh
-```
-
 ## QuickStart
 
-シミュレータのインストール後、次のコマンドを入力して起動してください。
+After the installation, run the following commands.
 
 ```
 roslaunch raspimouse_gazebo raspimouse_with_samplemaze.launch
 ```
 
-詳細は[このページ](https://github.com/rt-net/raspimouse_sim/wiki/quickstart)をお読みください。
+Checkout [this page](https://github.com/rt-net/raspimouse_sim/wiki/quickstart) for details.
 
-## スクリーンショット
+## Screenshots
 
-### サンプル迷路での動作例
+### moving in sample maze
 
 ```
 roslaunch raspimouse_gazebo raspimouse_with_samplemaze.launch
@@ -85,7 +73,7 @@ roslaunch raspimouse_gazebo raspimouse_with_samplemaze.launch
 
 ![](https://rt-net.github.io/images/raspberry-pi-mouse/raspimouse_sim_samplemaze.png)
 
-### URG付きモデルでの動作例
+### moving with URG
 
 ```
 roslaunch raspimouse_gazebo raspimouse_with_gasstand.launch
@@ -93,42 +81,28 @@ roslaunch raspimouse_gazebo raspimouse_with_gasstand.launch
 
 ![](https://rt-net.github.io/images/raspberry-pi-mouse/raspimouse_sim_urg.png)
 
-### URG付きモデルでSLAM動作例
+### SLAM
 
 ```
-# 1つ目の端末で
-roslaunch raspimouse_gazebo raspimouse_with_willowgarage.launch
-# 2つ目の端末で
-roslaunch raspimouse_ros_examples slam_gmapping.launch
-# 3つ目の端末で
-roslaunch raspimouse_ros_examples teleop.launch key:=true mouse:=false
+# 1st terminal
+roslaunch raspimouse_slam raspimouse_slam.launch
+# 2nd terminal
+roslaunch raspimouse_gazebo keyboard_teleop.launch
 ```
 
-![](https://rt-net.github.io/images/raspberry-pi-mouse/raspimouse_sim_urg_slam_gmapping.png)
-
-※raspimouse_ros_examplesを使う際には[rt-net/raspimouse_ros_examples](https://github.com/rt-net/raspimouse_ros_examples)のインストールが必要です。
-
-以下のコマンドでインストールができます。
+### Navigation
 
 ```
-cd ~/catkin_ws/src
-git clone https://github.com/rt-net/raspimouse_ros_examples.git
-rosdep install -r -y -i --from-paths raspimouse*
-cd ~/catkin_ws && catkin_make
-source ~/catkin_ws/devel/setup.bash
+# 1st terminal
+roslaunch raspimouse_navigation raspimouse_navigation.launch
 ```
 
-## ライセンス
+## License
 
-このリポジトリはMITライセンスに基づいて公開されています。  
-MITライセンスについては[LICENSE]( ./LICENSE )を確認してください。
+This repository is licensed under the MIT license, see [LICENSE]( ./LICENSE ).  
+Unless attributed otherwise, everything in this repository is under the MIT license.
 
-※このソフトウェアは基本的にオープンソースソフトウェアとして「AS IS」（現状有姿のまま）で提供しています。本ソフトウェアに関する無償サポートはありません。  
-バグの修正や誤字脱字の修正に関するリクエストは常に受け付けていますが、それ以外の機能追加等のリクエストについては社内のガイドラインを優先します。
-
-### 謝辞
-
-以下のリポジトリのファイルをベースに開発されています。
+### Acknowledgements
 
 * [CIR-KIT/fourth_robot_pkg]( https://github.com/CIR-KIT/fourth_robot_pkg )
   * author
@@ -136,7 +110,7 @@ MITライセンスについては[LICENSE]( ./LICENSE )を確認してくださ�
   * maintainer
     * RyodoTanaka
   * BSD ([BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause))
-  * 詳細は [package.xml](https://github.com/CIR-KIT/fourth_robot_pkg/blob/indigo-devel/fourth_robot_control/package.xml) を参照してください。
+  * See [package.xml](https://github.com/CIR-KIT/fourth_robot_pkg/blob/indigo-devel/fourth_robot_control/package.xml) for details.
 * [yujinrobot/kobuki]( https://github.com/yujinrobot/kobuki )
   * authors
     * Daniel Stonier
@@ -146,4 +120,4 @@ MITライセンスについては[LICENSE]( ./LICENSE )を確認してくださ�
   * maintainer
     * Daniel Stonier
   * BSD ([BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause))
-  * 詳細は [package.xml](https://github.com/yujinrobot/kobuki/blob/melodic/kobuki/package.xml) を参照してください。
+  * See [package.xml](https://github.com/yujinrobot/kobuki/blob/melodic/kobuki/package.xml) for details。
