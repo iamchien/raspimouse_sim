@@ -100,9 +100,9 @@ roslaunch raspimouse_navigation raspimouse_navigation.launch
 ### Autonomous SLAM
 ```
 roslaunch raspimouse_autoslam autonomous_explorer.launch
-or
+# or
 roslaunch raspimouse_autoslam autonomous_explorer.launch explorer:=RRT
-or
+# or
 roslaunch raspimouse_autoslam autonomous_explorer.launch explorer:=BUG_WALLFOLLOW
 ```
 
