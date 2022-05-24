@@ -8,7 +8,7 @@
 
 import rospy
 import math
-from raspimouse_ros_2.msg import LightSensorValues
+from raspimouse_description.msg import LightSensorValues
 from sensor_msgs.msg import LaserScan
 
 
