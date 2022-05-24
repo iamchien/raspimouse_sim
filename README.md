@@ -1,5 +1,3 @@
-[English](README.en.md) | [日本語](README.md)
-
 # raspimouse_sim
 
 ROS package suite for Raspberry Pi Mouse Simulator runs on Gazebo
