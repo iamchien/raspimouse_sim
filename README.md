@@ -97,6 +97,15 @@ roslaunch raspimouse_gazebo keyboard_teleop.launch
 roslaunch raspimouse_navigation raspimouse_navigation.launch
 ```
 
+### Autonomous SLAM
+```
+roslaunch raspimouse_autoslam autonomous_explorer.launch
+or
+roslaunch raspimouse_autoslam autonomous_explorer.launch explorer:=RRT
+or
+roslaunch raspimouse_autoslam autonomous_explorer.launch explorer:=BUG_WALLFOLLOW
+```
+
 ## License
 
 This repository is licensed under the MIT license, see [LICENSE]( ./LICENSE ).  
