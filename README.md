@@ -90,6 +90,13 @@ roslaunch raspimouse_slam raspimouse_slam.launch
 roslaunch raspimouse_gazebo keyboard_teleop.launch
 ```
 
+### Navigation
+
+```
+# 1st terminal
+roslaunch raspimouse_navigation raspimouse_navigation.launch
+```
+
 ## License
 
 This repository is licensed under the MIT license, see [LICENSE]( ./LICENSE ).  
