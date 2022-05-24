@@ -85,26 +85,10 @@ roslaunch raspimouse_gazebo raspimouse_with_gasstand.launch
 
 ```
 # 1st terminal
-roslaunch raspimouse_gazebo raspimouse_with_willowgarage.launch
+roslaunch raspimouse_slam raspimouse_slam.launch
 # 2nd terminal
-roslaunch raspimouse_ros_examples slam_gmapping.launch
-# 3rd terminal
-roslaunch raspimouse_ros_examples teleop.launch key:=true mouse:=false
+roslaunch raspimouse_gazebo keyboard_teleop.launch
 ```
-
-![](https://rt-net.github.io/images/raspberry-pi-mouse/raspimouse_sim_urg_slam_gmapping.png)
-
-[rt-net/raspimouse_ros_examples](https://github.com/rt-net/raspimouse_ros_examples) is required to launch nodes in raspimouse_ros_examples.  
-Run the following commands to install it.
-
-```
-cd ~/catkin_ws/src
-git clone https://github.com/rt-net/raspimouse_ros_examples.git
-rosdep install -r -y -i --from-paths raspimouse*
-cd ~/catkin_ws && catkin_make
-source ~/catkin_ws/devel/setup.bash
-```
-
 
 ## License
 
