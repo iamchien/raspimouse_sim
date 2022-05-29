@@ -37,6 +37,7 @@ Download this ROS package.
 ```
 cd ~/catkin_ws/src
 git clone https://github.com/irobo197/raspimouse_sim.git
+git clone -b melodic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 ```
 
 Install the dependent ROS packages.
