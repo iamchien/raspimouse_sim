@@ -90,7 +90,6 @@ def index_of_point(mapData, Xp):
     Xstartx = mapData.info.origin.position.x
     Xstarty = mapData.info.origin.position.y
     width = mapData.info.width
-    Data = mapData.data
     index = int(	(floor((Xp[1]-Xstarty)/resolution) *
                   width)+(floor((Xp[0]-Xstartx)/resolution)))
     return index
@@ -183,7 +182,6 @@ def Nearest(V, x):
 
 def Nearest2(V, x):
     n = inf
-    result = 0
     for i in range(0, len(V)):
         n1 = norm(V[i]-x)
 

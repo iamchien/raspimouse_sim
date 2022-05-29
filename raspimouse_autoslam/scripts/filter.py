@@ -11,16 +11,16 @@ import tf
 from numpy import array, vstack, delete
 from functions import gridValue, informationGain
 from sklearn.cluster import MeanShift
-from ros_autonomous_slam.msg import PointArray
+from raspimouse_autoslam.msg import PointArray
 
 # Subscribers' callbacks------------------------------
 mapData = OccupancyGrid()
 frontiers = []
-globalmaps = []
-
+globalData = OccupancyGrid()
+globalmaps = None
 
 def callBack(data, args):
-    global frontiers, min_distance
+    global frontiers
     transformedPoint = args[0].transformPoint(args[1], data)
     x = [array([transformedPoint.point.x, transformedPoint.point.y])]
     if len(frontiers) > 0:
@@ -28,27 +28,18 @@ def callBack(data, args):
     else:
         frontiers = x
 
-
 def mapCallBack(data):
     global mapData
     mapData = data
 
-
 def globalMap(data):
-    global global1, globalmaps, litraIndx, namespace_init_count, n_robots
-    global1 = data
-    if n_robots > 1:
-        indx = int(data._connection_header['topic']
-                   [litraIndx])-namespace_init_count
-    elif n_robots == 1:
-        indx = 0
-    globalmaps[indx] = data
+    global globalData, globalmaps
+    globalData = data
+    globalmaps = data
 
 # Node----------------------------------------------
-
-
 def node():
-    global frontiers, mapData, global1, global2, global3, globalmaps, litraIndx, n_robots, namespace_init_count
+    global frontiers, globalmaps
     rospy.init_node('filter', anonymous=False)
 
     # fetching all parameters
@@ -57,53 +48,32 @@ def node():
     # this can be smaller than the laser scanner range, >> smaller >>less computation time>> too small is not good, info gain won't be accurate
     info_radius = rospy.get_param('~info_radius', 1.0)
     goals_topic = rospy.get_param('~goals_topic', '/detected_points')
-    n_robots = rospy.get_param('~n_robots', 1)
-    namespace = rospy.get_param('~namespace', '')
-    namespace_init_count = rospy.get_param('namespace_init_count', 1)
     rateHz = rospy.get_param('~rate', 100)
     global_costmap_topic = rospy.get_param(
         '~global_costmap_topic', '/move_base/global_costmap/costmap')
     robot_frame = rospy.get_param('~robot_frame', 'base_link')
-
-    litraIndx = len(namespace)
     rate = rospy.Rate(rateHz)
+
 # -------------------------------------------
     rospy.Subscriber(map_topic, OccupancyGrid, mapCallBack)
-
-
 # ---------------------------------------------------------------------------------------------------------------
+    globalmaps = OccupancyGrid()
+    rospy.Subscriber(global_costmap_topic, OccupancyGrid, globalMap)
 
-    for i in range(0, n_robots):
-        globalmaps.append(OccupancyGrid())
-
-    if len(namespace) > 0:
-        for i in range(0, n_robots):
-            rospy.Subscriber(namespace+str(i+namespace_init_count) +
-                             global_costmap_topic, OccupancyGrid, globalMap)
-    elif len(namespace) == 0:
-        rospy.Subscriber(global_costmap_topic, OccupancyGrid, globalMap)
 # wait if map is not received yet
     while (len(mapData.data) < 1):
         rospy.loginfo('Waiting for the map')
         rospy.sleep(0.1)
-        pass
 # wait if any of robots' global costmap map is not received yet
-    for i in range(0, n_robots):
-        while (len(globalmaps[i].data) < 1):
-            rospy.loginfo('Waiting for the global costmap')
-            rospy.sleep(0.1)
-            pass
+    while (len(globalmaps.data) < 1):
+        rospy.loginfo('Waiting for the global costmap')
+        rospy.sleep(0.1)
 
     global_frame = "/"+mapData.header.frame_id
 
     tfLisn = tf.TransformListener()
-    if len(namespace) > 0:
-        for i in range(0, n_robots):
-            tfLisn.waitForTransform(global_frame[1:], namespace+str(
-                i+namespace_init_count)+'/'+robot_frame, rospy.Time(0), rospy.Duration(10.0))
-    elif len(namespace) == 0:
-        tfLisn.waitForTransform(
-            global_frame[1:], '/'+robot_frame, rospy.Time(0), rospy.Duration(10.0))
+    tfLisn.waitForTransform(
+        global_frame[1:], '/'+robot_frame, rospy.Time(0), rospy.Duration(10.0))
 
     rospy.Subscriber(goals_topic, PointStamped, callback=callBack,
                      callback_args=[tfLisn, global_frame[1:]])
@@ -148,7 +118,6 @@ def node():
     p.z = 0
 
     pp = []
-    pl = []
 
     points_clust.header.frame_id = mapData.header.frame_id
     points_clust.header.stamp = rospy.Time.now()
@@ -206,12 +175,10 @@ def node():
             temppoint.point.x = centroids[z][0]
             temppoint.point.y = centroids[z][1]
 
-            for i in range(0, n_robots):
-
-                transformedPoint = tfLisn.transformPoint(
-                    globalmaps[i].header.frame_id, temppoint)
-                x = array([transformedPoint.point.x, transformedPoint.point.y])
-                cond = (gridValue(globalmaps[i], x) > threshold) or cond
+            transformedPoint = tfLisn.transformPoint(
+                globalmaps.header.frame_id, temppoint)
+            x = array([transformedPoint.point.x, transformedPoint.point.y])
+            cond = (gridValue(globalmaps, x) > threshold) or cond
             if (cond or (informationGain(mapData, [centroids[z][0], centroids[z][1]], info_radius*0.5)) < 0.2):
                 centroids = delete(centroids, (z), axis=0)
                 z = z-1
@@ -240,7 +207,6 @@ def node():
         pub2.publish(points_clust)
         rate.sleep()
 # -------------------------------------------------------------------------
-
 
 if __name__ == '__main__':
     try:
