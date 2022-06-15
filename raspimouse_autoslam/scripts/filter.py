@@ -87,6 +87,10 @@ def node():
     while len(frontiers) < 1:
         pass
 
+    print()
+    print("frontiers: ", frontiers)
+    print()
+
     points = Marker()
     points_clust = Marker()
 # Set the frame ID and timestamp.  See the TF tutorials for information on these.
@@ -147,6 +151,7 @@ def node():
     temppoint.point.z = 0.0
 
     arraypoints = PointArray()
+
     tempPoint = Point()
     tempPoint.z = 0.0
 # -------------------------------------------------------------------------

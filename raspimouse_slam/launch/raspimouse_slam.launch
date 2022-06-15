@@ -1,6 +1,6 @@
 <launch>
   <!-- Arguments -->
-  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, hector]"/>
   <arg name="configuration_basename" default="raspimouse_lds_2d.lua"/>
   <arg name="open_rviz" default="true"/>
 
@@ -15,6 +15,6 @@
   <!-- rviz -->
   <group if="$(arg open_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
-        args="-d $(find raspimouse_slam)/rviz/raspimouse_$(arg slam_methods).rviz"/>
+        args="-d $(find raspimouse_slam)/rviz/slam.rviz"/>
   </group>
 </launch>
